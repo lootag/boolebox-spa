@@ -30,11 +30,11 @@ export class HomepageComponent implements OnInit {
   public  joined: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     async ngOnInit(): Promise<void> {
-        this.connection = this.buildConnection();
-        await this.startConnection();
-        await this.signalingService.goOnline(this.connection, this.authService.room,
-                                       this.authService.token)
-        this.setRouteParameters();
+        //this.connection = this.buildConnection();
+        //await this.startConnection();
+        //await this.signalingService.goOnline(this.connection, this.authService.room,
+                                       //this.authService.token)
+        //this.setRouteParameters();
         /*
         let localVideo = <HTMLVideoElement>document.querySelector("#localVideo")
         if (navigator.mediaDevices.getUserMedia) {

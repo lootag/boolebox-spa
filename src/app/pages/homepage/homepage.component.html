@@ -1,0 +1,43 @@
+<table>
+    <tr>
+        <td>
+            <input id="myCoolText" type="text">
+        </td>
+        <td>
+            {{toDisplay}}
+        </td>
+        <td>
+            <table>
+                <tr *ngFor="let user of (loggedUsers | async)">
+                    <td>
+                        {{user}}
+                    </td>
+                </tr>
+            </table>
+        </td>        
+    </tr>
+    <tr> 
+        <td>
+            <input id="user" type="text">
+        </td>
+        <td>
+            <input type="submit" (click)="onSubmit()">
+            <input *ngIf="(wsIsConnected | async) === 2" type="submit" (click)="onJoin()">
+            <input *ngIf="joined | async" type="submit" (click)="onPublish()">
+        </td>
+        <td>
+            &nbsp;
+        </td>
+    </tr>
+</table>
+
+<div class="row">
+    <div class="col-sm-6">
+        <video id="localVideo" autoplay="true" muted="true"></video>
+    </div>
+    <div class="col-sm-6">
+        <video id="remoteVideo" autoplay="true" muted="true"></video>
+    </div>
+</div>
+
+

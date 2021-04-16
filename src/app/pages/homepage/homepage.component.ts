@@ -6,7 +6,7 @@ import { BehaviorSubject }   from 'rxjs';
 import * as signalR from "@aspnet/signalr";
 import { ActivatedRoute } from '@angular/router'
 import * as adapter from '../../../assets/js/adapter-latest.js';
-import { WebRTCAdaptor } from '../../../assets/js/webrtc-adaptor.js'
+import { WebRTCAdaptor } from '../../../assets/js/webrtc-adaptor.js';
 
 @Component({
   selector: 'app-homepage',
@@ -105,7 +105,12 @@ export class HomepageComponent implements OnInit {
 
  private  createWebRTCAdaptor(): void {
 
-    var pc_config = null;
+    var pc_config = {
+        'iceServers' : [ {
+            'urls' : 'stun:stun1.l.google.com:19302'
+        } ]
+    };
+
     let sdpConstrains = {
         OfferToReceiveAudio: false,
         OfferToReceiveVideo: false 
@@ -128,17 +133,18 @@ export class HomepageComponent implements OnInit {
             if (info === "initialized") {
                 let value = this.wsIsConnected.value;
                 this.wsIsConnected.next(value + 1);
+                (<HTMLVideoElement>document.getElementById("localVideo")).muted = true;
             } 
             else if (info == "joinedTheRoom") {
                 this.streamId = obj.streamId;
                 this.joined.next(true);
-                this.webRTCAdaptor.publish(this.streamId);
+                this.webRTCAdaptor.publish(this.streamId, null);
                 //this.webRTCAdaptor.play(streamsToPlay[0], "remoteVideo");
             }
             else if (info=="started") {
                 this.webRTCAdaptor.publish(this.streamId);
             }
-            console.log(info)
+            console.log(info);
         },
         callbackError: (err, message) => {
             console.log("There was an error: " + err);
@@ -149,7 +155,7 @@ export class HomepageComponent implements OnInit {
 
  public onJoin(): void {
     this.webRTCAdaptor.joinRoom("someRoom",
-                                this.authService.userIdentifier);
+                                this.authService.userIdentifier);	
  }
 
 }

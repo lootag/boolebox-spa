@@ -39,7 +39,7 @@ export class WebSocketAdaptor {
                 }
                  
                 console.log("started")
-                //this.webrtcadaptor.startPublishing(obj.streamId);
+                this.webrtcadaptor.startPublishing(obj.streamId);
             }
             else if (obj.command == "takeCandidate") {
 

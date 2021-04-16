@@ -22,7 +22,7 @@
         </td>
         <td>
             <input type="submit" (click)="onSubmit()">
-            <input *ngIf="(wsIsConnected | async) === 2" type="submit" (click)="onJoin()">
+            <input *ngIf="(wsIsConnected | async) === 2" type="submit" (click)="onJoin()" value="onJoin">
             <input *ngIf="joined | async" type="submit" (click)="onPublish()">
         </td>
         <td>
@@ -33,7 +33,7 @@
 
 <div class="row">
     <div class="col-sm-6">
-        <video id="localVideo" autoplay="true" muted="true"></video>
+        <video id="localVideo" autoplay="true" muted controls></video>
     </div>
     <div class="col-sm-6">
         <video id="remoteVideo" autoplay="true" muted="true"></video>

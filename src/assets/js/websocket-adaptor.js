@@ -18,7 +18,7 @@ export class WebSocketAdaptor {
             if (true) {
                 console.log("websocket connected");
             }
-
+    
             this.pingTimerId = setInterval(() => {
                 this.sendPing();
             }, 3000);
@@ -37,8 +37,7 @@ export class WebSocketAdaptor {
                 if (this.debug) {
                     console.debug("received start command");
                 }
-                 
-                console.log("started")
+
                 this.webrtcadaptor.startPublishing(obj.streamId);
             }
             else if (obj.command == "takeCandidate") {
@@ -70,7 +69,6 @@ export class WebSocketAdaptor {
                 if (obj.definition == "play_finished" || obj.definition == "publish_finished") {
                     this.webrtcadaptor.closePeerConnection(obj.streamId);
                 }
-                console.log(obj);
             }
             else if (obj.command == "streamInformation") {
                 this.callback(obj.command, obj);
@@ -90,9 +88,6 @@ export class WebSocketAdaptor {
             }
             else if (obj.command == "peerMessageCommand") {
                 this.callback(obj.command, obj);
-            }
-            else {
-                this.callback(obj.command)
             }
         }
 

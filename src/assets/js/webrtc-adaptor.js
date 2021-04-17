@@ -4,7 +4,7 @@
  */
 
 import {PeerStats} from "./peer-stats.js"
-import {WebSocketAdaptor} from "./web-socket-adaptor.js"
+import {WebSocketAdaptor} from "./websocket-adaptor.js"
 
 export class WebRTCAdaptor
 {
@@ -25,7 +25,7 @@ export class WebRTCAdaptor
 		this.audioTrack = null;
 		this.smallVideoTrack = null;		
 		this.audioContext = null;
-	        this.soundOriginGainNode = null;
+	    this.soundOriginGainNode = null;
 		this.secondStreamGainNode = null;
 		this.localStream = null;
 		this.bandwidth = 900; //default bandwidth kbps
@@ -491,7 +491,7 @@ export class WebRTCAdaptor
 		var jsCmd = {
 				command : "joinRoom",
 				room: roomName,
-                                streamId: streamId
+				streamId: streamId,
 		}
 		this.webSocketAdaptor.send(JSON.stringify(jsCmd));
 	}
@@ -531,9 +531,9 @@ export class WebRTCAdaptor
 		var jsCmd = {
 				command : "join",
 				streamId : streamId,
-                                multiPeer : this.isMultiPeer && this.multiPeerStreamId == null,
+				multiPeer : this.isMultiPeer && this.multiPeerStreamId == null,
 				mode : this.isPlayMode ? "play" : "both",
-		}
+		};
 
 		this.webSocketAdaptor.send(JSON.stringify(jsCmd));
 	}

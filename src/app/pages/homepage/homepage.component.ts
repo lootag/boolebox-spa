@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService }       from '../../services/auth/auth.service';
 import { SingnalingService } from '../../services/signaling/singnaling.service';
-import { IceService }        from '../../services/ice/ice.service';
 import { BehaviorSubject }   from 'rxjs';
 import * as signalR from "@aspnet/signalr";
 import { ActivatedRoute } from '@angular/router'
 import * as adapter from '../../../assets/js/adapter-latest.js';
 import { WebRTCAdaptor } from '../../../assets/js/webrtc-adaptor.js';
+import { Stream } from '../../models/stream.model';
 
 @Component({
   selector: 'app-homepage',
@@ -17,36 +17,23 @@ export class HomepageComponent implements OnInit {
 
   constructor(private authService: AuthService,
               private signalingService: SingnalingService,
-              private iceService: IceService,
               private route      : ActivatedRoute) { }
   public  toDisplay: string = "";
   public  loggedUsers: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+  public  streams: BehaviorSubject<Stream[]> = new BehaviorSubject<Stream[]>([]);
   private connection: signalR.HubConnection;
   private parameters: any;
   private otherUser: string;
   private webRTCAdaptor: WebRTCAdaptor;
   private streamId: string;
-  public  wsIsConnected: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  public  joined: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private roomTimerId: NodeJS.Timeout;
 
     async ngOnInit(): Promise<void> {
-        //this.connection = this.buildConnection();
-        //await this.startConnection();
-        //await this.signalingService.goOnline(this.connection, this.authService.room,
-                                       //this.authService.token)
-        //this.setRouteParameters();
-        /*
-        let localVideo = <HTMLVideoElement>document.querySelector("#localVideo")
-        if (navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true})
-                .then(stream => {
-                  localVideo.srcObject = stream;
-                })
-                .catch(err => {
-                  console.log(err);
-                })
-        }
-        */
+        this.connection = this.buildConnection();
+        await this.startConnection();
+        await this.signalingService.goOnline(this.connection, this.authService.room,
+                                       this.authService.token)
+        this.setRouteParameters();
         this.createWebRTCAdaptor();
     }
 
@@ -120,31 +107,50 @@ export class HomepageComponent implements OnInit {
         audio: true
     }
 
+    const localVideoId = "localVideoId"
+
     
     this.webRTCAdaptor = new WebRTCAdaptor({
         websocket_url : "ws://52.232.122.122:5080/WebRTCAppEE/websocket",
         mediaConstraints: mediaConstraints,
         peerconnection_config: pc_config,
         sdp_constraints: sdpConstrains,
-        localVideoId: "localVideo",
+        localVideoId: localVideoId,
         debug: true,
         bandwidth:1000,
         callback: (info, obj) => {
             if (info === "initialized") {
-                let value = this.wsIsConnected.value;
-                this.wsIsConnected.next(value + 1);
                 (<HTMLVideoElement>document.getElementById("localVideo")).muted = true;
+                this.webRTCAdaptor.joinRoom(this.authService.userIdentifier);	
+
             } 
-            else if (info == "joinedTheRoom") {
+            else if (info === "joinedTheRoom") {
+                const getRoomInfoIntervalMs = 3000;
                 this.streamId = obj.streamId;
-                this.joined.next(true);
                 this.webRTCAdaptor.publish(this.streamId, null);
-                //this.webRTCAdaptor.play(streamsToPlay[0], "remoteVideo");
+
+                if (obj.streams.length != 0) {
+                    this.otherUser = obj.streams.filter(s => s !=
+                                                       this.authService.userIdentifier)[0];
+                    this.webRTCAdaptor.play(this.otherUser, null);
+                }
+
+                this.roomTimerId = setInterval(() => {
+                   this.webRTCAdaptor.getRoomInfo(this.authService.room,
+                                                  this.authService.userIdentifier);
+                }, getRoomInfoIntervalMs)
             }
-            else if (info=="started") {
-                this.webRTCAdaptor.publish(this.streamId);
+            else if (info === "roomInformation") {
+                if (obj.streams.length != 0) {
+                    this.webRTCAdaptor.play(obj.streams[0], null);
+                }
             }
-            console.log(info);
+            else if (info == "newStreamAvailable") {
+                let streams = this.streams.value;
+                let newStream = {streamId: obj.streamId, streamSource: obj.stream}
+                streams.push(newStream);
+                this.streams.next(streams);
+            }
         },
         callbackError: (err, message) => {
             console.log("There was an error: " + err);
@@ -152,10 +158,4 @@ export class HomepageComponent implements OnInit {
         }
     })
  }
-
- public onJoin(): void {
-    this.webRTCAdaptor.joinRoom("someRoom",
-                                this.authService.userIdentifier);	
- }
-
 }

@@ -22,8 +22,6 @@
         </td>
         <td>
             <input type="submit" (click)="onSubmit()">
-            <input *ngIf="(wsIsConnected | async) === 2" type="submit" (click)="onJoin()" value="onJoin">
-            <input *ngIf="joined | async" type="submit" (click)="onPublish()">
         </td>
         <td>
             &nbsp;
@@ -36,8 +34,9 @@
         <video id="localVideo" autoplay="true" muted controls></video>
     </div>
     <div class="col-sm-6">
-        <video id="remoteVideo" autoplay="true" muted="true"></video>
+        <video id="remoteVideo" autoplay="true" muted controls></video>
     </div>
+        <input type="text" class="form-control" value="someRoom" id="roomName" placeholder="Type room name">
 </div>
 
 

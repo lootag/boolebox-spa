@@ -11,11 +11,12 @@ export class VideoComponent implements OnInit, OnChanges {
 
   constructor() { }
 
-
   @Input() stream: Stream;
 
   ngOnInit(): void {
-    this.playStreamIfNotNull(this.stream.streamSource);
+    if (this.stream != null) {
+        this.playStreamIfNotNull(this.stream.streamSource);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -25,11 +26,10 @@ export class VideoComponent implements OnInit, OnChanges {
   }
 
   private playStreamIfNotNull(stream: any): void {
-    let remoteVideoId = "atomic-video";
+    let remoteVideoId = "atomic-video" + this.stream.streamId;
     let remoteVideo = <HTMLVideoElement>document.getElementById(remoteVideoId);
     if (stream != null) {
         remoteVideo.srcObject = stream;
     }
   }
-
 }

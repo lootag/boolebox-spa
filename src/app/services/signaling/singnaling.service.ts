@@ -10,7 +10,8 @@ export class SingnalingService {
   constructor(private httpClient: HttpClient) { }
 
 
-  public async goOnline(connection: signalR.HubConnection, roomCode: string,
+  public async goOnline(connection: signalR.HubConnection, 
+                        roomCode: string,
                         token: string): Promise<void> {
     let url = "http://localhost:8080/api/v1/go-online";
     let header = { Authorization: `Bearer ${token}` };

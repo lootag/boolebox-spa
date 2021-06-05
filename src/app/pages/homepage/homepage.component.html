@@ -1,42 +1,40 @@
-<table>
-    <tr>
-        <td>
-            <input id="myCoolText" type="text">
-        </td>
-        <td>
-            {{toDisplay}}
-        </td>
-        <td>
-            <table>
-                <tr *ngFor="let user of (loggedUsers | async)">
-                    <td>
-                        {{user}}
-                    </td>
-                </tr>
-            </table>
-        </td>        
-    </tr>
-    <tr> 
-        <td>
-            <input id="user" type="text">
-        </td>
-        <td>
-            <input type="submit" (click)="onSubmit()">
-        </td>
-        <td>
-            &nbsp;
-        </td>
-    </tr>
-</table>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">BooleServer</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
+    <div class="collapse navbar-collapse" id="navbarColor02">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link active" href="#">Home
+            <span class="visually-hidden">(current)</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<video class="local-video" id="localVideo" autoplay="true" muted></video>
+<ng-container *ngFor="let stream of (streams$ | async)">
+    <video class="remote-video" id="remoteVideo-{{stream}}" autoplay="true" muted></video>
+</ng-container>
 <div class="row">
-    <div class="col-sm-6">
-        <video id="localVideo" autoplay="true" muted controls></video>
+    <div *ngIf="isPublishingAudio$ | async" class="col-sm">
+        <button type="button" class="btn btn-primary" (click)="onMute()">mute</button>
     </div>
-    <div class="col-sm-6">
-        <video id="remoteVideo" autoplay="true" muted controls></video>
+    <div *ngIf="!(isPublishingAudio$ | async)" class="col-sm">
+        <button type="button" class="btn btn-primary" (click)="onUnmute()">unmute</button>
     </div>
-        <input type="text" class="form-control" value="someRoom" id="roomName" placeholder="Type room name">
+    <div *ngIf="isPublishingVideo$ | async" class="col-sm">
+        <button type="button" class="btn btn-primary" (click)="onTurnVideoOff()">turn video off</button>
+    </div>
+    <div *ngIf="!(isPublishingVideo$ | async)" class="col-sm">
+        <button type="button" class="btn btn-primary" (click)="onTurnVideoOn()">turn video on</button>
+    </div>
+    <div class="col-sm">
+        <button type="button" class="btn btn-primary" (click)="onHangUp()">hang up</button>
+    </div>
 </div>
-
 

@@ -1,4 +1,5 @@
 import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { Stream } from '../../../models/stream.model';
 
 @Component({

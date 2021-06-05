@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Stream } from '../../../../models/stream.model';
 
 @Component({
   selector: 'app-video-block',
@@ -8,8 +9,13 @@ import { Component, OnInit } from '@angular/core';
 export class VideoBlockComponent implements OnInit {
 
   constructor() { }
-
+  @Input() stream: Stream;
+    
   ngOnInit(): void {
+    let remoteVideoId = "remoteVideo" + this.stream.streamId;
+    let remoteVideo = <HTMLVideoElement>document.getElementById(remoteVideoId);
+    if (this.stream.streamSource != null) {
+        remoteVideo.srcObject = this.stream.streamSource;
+    }
   }
-
 }

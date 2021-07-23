@@ -1,40 +1,17 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">BooleServer</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarColor02">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-          <a class="nav-link active" href="#">Home
-            <span class="visually-hidden">(current)</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+<app-navbar (clickOpenChatBar)="onClickOpenChatBar()"></app-navbar>
 <video class="local-video" id="localVideo" autoplay="true" muted></video>
 <ng-container *ngFor="let stream of (streams$ | async)">
     <video class="remote-video" id="remoteVideo-{{stream}}" autoplay="true" muted></video>
 </ng-container>
-<div class="row">
-    <div *ngIf="isPublishingAudio$ | async" class="col-sm">
-        <button type="button" class="btn btn-primary" (click)="onMute()">mute</button>
-    </div>
-    <div *ngIf="!(isPublishingAudio$ | async)" class="col-sm">
-        <button type="button" class="btn btn-primary" (click)="onUnmute()">unmute</button>
-    </div>
-    <div *ngIf="isPublishingVideo$ | async" class="col-sm">
-        <button type="button" class="btn btn-primary" (click)="onTurnVideoOff()">turn video off</button>
-    </div>
-    <div *ngIf="!(isPublishingVideo$ | async)" class="col-sm">
-        <button type="button" class="btn btn-primary" (click)="onTurnVideoOn()">turn video on</button>
-    </div>
-    <div class="col-sm">
-        <button type="button" class="btn btn-primary" (click)="onHangUp()">hang up</button>
-    </div>
-</div>
+<app-controls [isPublishingAudio]="isPublishingAudio$ | async"
+              [isPublishingVideo]="isPublishingVideo$ | async"
+              (clickMute)="onClickMute()"
+              (clickUnmute)="onClickUnmute()"
+              (clickTurnVideoOff)="onClickTurnVideoOff()"
+              (clickTurnVideoOn)="onClickTurnVideoOn()"
+              (clickHangUp)="onClickHangUp()">
+</app-controls>
+<app-chat [isChatBarOpen]="isChatBarOpen$ | async" (clickCloseChatBar)="onClickCloseChatBar()"></app-chat>
+
+
 

@@ -3,18 +3,26 @@ import { WebRTCAdaptor } from '../../../../../assets/js/webrtc-adaptor.js';
 import { Stream } from '../../../../models/stream.model';
 import { pcConfig, sdpConstrains, mediaConstraints, localVideoId, websocketUrl, debug, bandwidth} from '../../constants';
 import { Observable, BehaviorSubject } from 'rxjs'
-import { AuthService }       from '../../../../services/auth/auth.service';
+import { AuthService }       from '../../../../state-management/auth/auth.service';
+import { SignalRService } from '../../../../state-management/signalR/signal-r.service';
+import { ChatParticipant } from '../../../../models/chat-participant.model';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class AntmediaManagementService {
 
-    constructor(private authService: AuthService) { }
+    constructor(private authService: AuthService,
+                private signalRService: SignalRService) { 
+        if(!this.signalRService.connection) this.signalRService.buildConnection(this.authService.token);
+        this.signalRService.connection.on("SetParticipantSharingScreen", this.setParticipantSharingScreen);
+    }
 
     get isPublishingAudio$(): Observable<boolean> {
         return this._isPublishingAudio$.asObservable();
     }
+
     get isPublishingVideo$(): Observable<boolean> {
         return this._isPublishingVideo$.asObservable();
     }
@@ -22,11 +30,13 @@ export class AntmediaManagementService {
     get streams$(): Observable<string[]> {
         return this._streams$.asObservable();
     }
+
     private webRTCAdaptor: WebRTCAdaptor;
-    private _streams$ : BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
     private roomTimerId: NodeJS.Timeout;
+    private _streams$ : BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
     private _isPublishingAudio$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
     private _isPublishingVideo$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+    private _participantSharingScreen$: BehaviorSubject<ChatParticipant> = new BehaviorSubject<ChatParticipant>(undefined);
 
     public enterRoom(): void {
         this.webRTCAdaptor = new WebRTCAdaptor({
@@ -88,7 +98,6 @@ export class AntmediaManagementService {
         else if (info === "newStreamAvailable") {
             return this.addVideoSource(obj);
         }
-
         else if (info == "play_finished") {
             return this.removeVideoSource(obj);
         }
@@ -96,7 +105,8 @@ export class AntmediaManagementService {
 
         
     private joinRoom(obj: any) {
-        (<HTMLVideoElement>document.getElementById("localVideo")).muted = true;
+        const localVideoId = "localVideo";
+        (<HTMLVideoElement>document.getElementById(localVideoId)).muted = true;
         this.webRTCAdaptor.joinRoom("someRoom", this.authService.userIdentifier);	
     }
 
@@ -240,6 +250,10 @@ export class AntmediaManagementService {
     private setLocalVideoDraggability(isLocalVideoDraggable: boolean) {
         let localVideo = document.getElementById("localVideo");
         localVideo.style.cursor = isLocalVideoDraggable ? "move" : "";
+    }
+
+    private setParticipantSharingScreen() { 
+
     }
 
 }

@@ -1,0 +1,12 @@
+<div id="participant-list">
+    <ng-container *ngFor="let participant of currentParticipants">
+        <button 
+            style="display= block; width: 100%; float: left;" 
+            type="button" 
+            class="btn btn-outline-light" 
+            *ngIf="participant.name != ''"
+            (click)="onClickTalkToParticipant(participant.name)">
+         {{participant.name}}
+        </button>
+    </ng-container>
+</div>

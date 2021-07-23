@@ -1,0 +1,6 @@
+<div class="form-group">
+    <textarea class="form-control" id="message-box" rows="3" placeholder="Hi!" [formControl]="messageContentFormControl"></textarea>
+    <a class="send-message-button" (click)="onClickSendMessage()">
+        <fa-icon id="send-message-icon" [icon]="sendMessageIcon" class="fa-lg"></fa-icon>
+    </a>
+</div>

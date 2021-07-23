@@ -1,0 +1,25 @@
+<mat-sidenav-container id="chat-bar"style="background-color: white;">
+    <mat-sidenav #sidenav [fixedInViewport]="true" mode="side" [opened]="isChatBarOpen" position="end">
+        <app-chat-controls 
+         (clickCloseChatBar)="onClickCloseChatBar()"
+         (clickGoToParticipantSelection)="onClickGoToParticipantSelection()"
+         (clickTalkToRoom)="onClickTalkToRoom()"
+         (clickTalkToParticipant)="onClickTalkToParticipant($event)">
+        </app-chat-controls>
+        <app-message-box
+         *ngIf="!(isUserSelectingParticipant$ | async)"
+         [messageContentFormControl]="messageContentFormControl"
+         (clickSendMessage)="onClickSendMessage()">
+        </app-message-box>
+        <app-messages-list 
+         *ngIf="!(isUserSelectingParticipant$ | async)"
+         [displayedMessages]="displayedMessages$ | async"
+         (scrollMessages)="onScrollMessages($event)">
+        </app-messages-list>
+        <app-participants-list 
+         *ngIf="(isUserSelectingParticipant$ | async)"
+         [currentParticipants]="currentParticipants$ | async"
+         (clickTalkToParticipant)="onClickTalkToParticipant($event)">
+        </app-participants-list>
+    </mat-sidenav>
+</mat-sidenav-container>

@@ -1,0 +1,27 @@
+#message-list {
+    display: block; 
+    margin-top: 15%; 
+    position: sticky; 
+    overflow: scroll; 
+    height: 75%;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.container {
+    display: block; 
+    margin-top: 15%; 
+}
+
+.container:before,
+.container:after {
+    content: "";
+    display: table;
+}
+
+.container:after {
+    clear: both;
+}
+

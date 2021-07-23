@@ -1,0 +1,19 @@
+<div id="message-list" (scroll)="onScroll($event)">
+    <div class="container" *ngFor="let message of displayedMessages">
+        <a *ngIf="message.origin === 'RECEIVED'"style="display= block; width: 70%;
+            float: right;" href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{message.chatParticipant}}</h5>
+                <small class="text-muted">{{message.date}}</small>
+            </div>
+            <p class="mb-1">{{message.content}}</p>
+        </a>
+        <a *ngIf="message.origin === 'SENT'" style="display= block; width: 70%; float: left;" href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">me</h5>
+                <small class="text-muted">{{message.date}}</small>
+            </div>
+            <p class="mb-1">{{message.content}}</p>
+        </a>
+    </div> 
+</div>

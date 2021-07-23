@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService }       from '../../services/auth/auth.service';
+import { AuthService }       from '../../state-management/auth/auth.service';
 import { User }              from '../../models/user.model';
 import { Token }             from '../../models/token.model';
 
@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
    this.authService.userIdentifier = user.email;
   }
 
-  getUser(): User {
+  private getUser(): User {
     let email    =
         (<HTMLInputElement>document.getElementById("email")).value;
     let password =
@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
     return user;
   }
 
-  getRoom(): string {
+  private getRoom(): string {
     let room     =
         (<HTMLInputElement>document.getElementById("room")).value;
     return room;

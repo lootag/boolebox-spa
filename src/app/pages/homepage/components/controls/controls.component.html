@@ -1,0 +1,27 @@
+<div class="row">
+    <div *ngIf="isPublishingAudio" class="col-sm">
+        <a  style="cursor: pointer;" (click)="onClickMute()">
+            <fa-icon [icon]="micIcon" class="fa-2x"></fa-icon>
+        </a>
+    </div>
+    <div *ngIf="!isPublishingAudio" class="col-sm">
+        <a  style="cursor: pointer;" (click)="onClickUnmute()">
+            <fa-icon [icon]="micSlashIcon" class="fa-2x"></fa-icon>
+        </a>
+    </div>
+    <div *ngIf="isPublishingVideo" class="col-sm">
+        <a style="cursor: pointer;" (click)="onClickTurnVideoOff()">
+            <fa-icon [icon]="videoIcon" class="fa-2x"></fa-icon>
+        </a>
+    </div>
+    <div *ngIf="!isPublishingVideo" class="col-sm">
+        <a style="cursor: pointer;" (click)="onClickTurnVideoOn()">
+            <fa-icon  [icon]="videoSlashIcon" class="fa-2x"></fa-icon>
+        </a>
+    </div>
+    <div class="col-sm">
+        <a style="cursor: pointer;" (click)="onClickHangUp()">
+            <fa-icon  [icon]="phoneSlashIcon" class="fa-2x"></fa-icon>
+        </a>
+    </div>
+</div>

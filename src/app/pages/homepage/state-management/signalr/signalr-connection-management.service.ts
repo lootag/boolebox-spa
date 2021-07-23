@@ -1,60 +1,40 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AuthService }       from '../../../../services/auth/auth.service';
 import * as signalR from "@aspnet/signalr";
+import { Observable, BehaviorSubject } from 'rxjs';
+import { Message } from '../../../../models/message.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignalrConnectionManagementService {
 
-    constructor(private authService: AuthService,
-                private httpClient: HttpClient) { }
+    constructor() { 
 
-    public async connect() {
-        await this.startConnection();
-        await this.goOnline();
-        await this.notifyOnlineStatus();
+        this._isChatBarOpen$ = new BehaviorSubject<boolean>(false);
+        this._messages$ = new BehaviorSubject<Map<string, Message[]>>(new Map<string, Message[]>());
+        this._arePublicMessagesDisplayed$ = new BehaviorSubject<boolean>(true);
+        this._selectedUser$ = new BehaviorSubject<string>(null);
+    }
+    
+
+    get isChatBarOpen$(): Observable<boolean> { 
+        return this._isChatBarOpen$.asObservable();
     }
 
     private connection: signalR.HubConnection;
+    private _isChatBarOpen$: BehaviorSubject<boolean>;
+    private _messages$: BehaviorSubject<Map<string, Message[]>>;
+    private _displayedMessages$: BehaviorSubject<Map<string, Message[]>>;
+    private _arePublicMessagesDisplayed$: BehaviorSubject<boolean>;
+    private _selectedUser$: BehaviorSubject<string>;
 
-    private async startConnection(): Promise<void>{
-        this.buildConnection();
-        try {
-            await this.connection.start();
-        } catch(err) {
-            console.log(err);
-        }
+    public openChatBar() {
+        this._isChatBarOpen$.next(true);
     }
 
-    private buildConnection() {
-        this.connection = new signalR.HubConnectionBuilder()
-                        .withUrl("http://localhost:8080/signaling", {
-                            accessTokenFactory: () => {
-                                return this.authService.token;
-                            }
-                        })
-                        .build();
+    public closeChatBar() {
+        this._isChatBarOpen$.next(false);
     }
 
-
-    private async goOnline(): Promise<void> {
-    let url = "http://localhost:8080/api/v1/go-online";
-    let header = { Authorization: `Bearer ${this.authService.token}` };
-    let connectionId = await this.connection.invoke("GetConnectionId")
-    this.httpClient.post(url, {roomCode: this.authService.room, connectionId: connectionId},
-                         {headers: header}).subscribe(
-                            data => console.log(data),
-                            err  => console.log(err)
-                         )
-    }
-
-    private async notifyOnlineStatus(): Promise<void> {
-        try { 
-            await this.connection.invoke("NotifyOnlineStatus");
-        } catch (err){ 
-            console.log(err);
-        }
-    }
 }
